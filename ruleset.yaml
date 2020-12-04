@@ -1,0 +1,29 @@
+extends: spectral:oas
+documentationUrl: https://github.com/EBSCOIS/platform.shared.openapi-spectral-rules/blob/main/docs/rule-descriptions.md
+#functions: [uniqueTagNames]
+rules:
+  api-path-format:
+    description: 'Paths must be all lower-case (with exception for path variables), alphanumeric, with dashes and braces allowed'
+    message: 'Paths must be all lower-case (with exception for path variables), alphanumeric, with dashes and braces allowed: {{property}}'
+    severity: error
+    given: $.paths
+    then:
+      field: '@key'
+      function: pattern
+      functionOptions:
+        match: '^(\/[a-z]+[0-9\-]*)+(\/[a-z0-9\-]+)*(\/{{1}(([a-z]+[0-9]*)([A-Z][a-z0-9]+)*)+}{1})*$'
+
+  security-schema-descriptions:
+    description: 'Security schema should have a description'
+    given: $.components.securitySchemes[*]
+    severity: warn
+    then:
+      field: description
+      function: truthy
+
+# OAS3 Overridden Rules
+# Overridden rules are those that use the same name as the OAS3 base rule
+# OAS3 Base Rules: https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md
+  oas3-api-servers: error
+
+  tag-description: error
